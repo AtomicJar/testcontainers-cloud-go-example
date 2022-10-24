@@ -8,6 +8,7 @@ local environment.
 ```
 git clone https://github.com/AtomicJar/testcontainers-cloud-go-example
 cd testcontainers-cloud-go-example
+go mod download
 go test -v -count=1
 ```
 
