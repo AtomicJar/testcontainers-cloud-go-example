@@ -34,8 +34,8 @@ const success = "                                         /                     
 	"  |__/  |__/   \\___/   \\______/ |__/ |__/ |__/|__/ \\_______/ \\______/  \\_______/|__/    \n" +
 	"  \n" +
 	"  \n" +
-	"  You configured correctly your Testcontainers Cloud environment! 🎉\n" +
-	"  Continue your journey at https://app.testcontainers.cloud\n"
+	"  Congratulations on running your first test on Testcontainers Cloud! 🎉\n" +
+	"  You can now return to the website to complete your onboarding\n"
 
 func TestWithRedis(t *testing.T) {
 	w := &strings.Builder{}

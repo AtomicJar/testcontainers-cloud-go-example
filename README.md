@@ -38,7 +38,40 @@ To download the agent for local usage, check the [download page here][tcc-downlo
 
 Test output:
 
-![success](./docs/success.png)
+```shell
+=== RUN   TestWithRedis/Connected_to_Testcontainers_Cloud
+    main_test.go:91:                                          /
+                                               /////////
+                                            ///////////////
+                                           /////////////////
+                                              /////////////
+                                             %%   ////   %
+                                             %%    //   %%
+                                           %%      //      %
+                                         %%        ////      %
+                                         %     /////////     %
+                                          % /////////////// %%
+                                            %%%%%%%%%%%%%%%
+
+            /%%%%%%    /%%                             /%%              /%%%%%
+           /%%__  %%  | %%                            |__/             |__  %%
+          | %%  \ %% /%%%%%%    /%%%%%%  /%%%%%%/%%%%  /%%  /%%%%%%%      | %%  /%%%%%%   /%%%%%%
+          | %%%%%%%%|_  %%_/   /%%__  %%| %%_  %%_  %%| %% /%%_____/      | %% |____  %% /%%__  %%
+          | %%__  %%  | %%    | %%  \ %%| %% \ %% \ %%| %%| %%       /%%  | %%  /%%%%%%%| %%  \__/
+          | %%  | %%  | %% /%%| %%  | %%| %% | %% | %%| %%| %%      | %%  | %% /%%__  %%| %%
+          | %%  | %%  |  %%%%/|  %%%%%%/| %% | %% | %%| %%|  %%%%%%%|  %%%%%%/|  %%%%%%%| %%
+          |__/  |__/   \___/   \______/ |__/ |__/ |__/|__/ \_______/ \______/  \_______/|__/
+
+
+          Congratulations on running your first test on Testcontainers Cloud! 🎉
+          You can now return to the website to complete your onboarding
+
+--- PASS: TestWithRedis (4.38s)
+    --- PASS: TestWithRedis/Container_can_start (0.06s)
+    --- PASS: TestWithRedis/Connected_to_Testcontainers_Cloud (0.00s)
+PASS
+ok  	github.com/AtomicJar/testcontainers-cloud-go-example	4.750s
+```
 
 Agent status:
 
