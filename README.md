@@ -52,5 +52,5 @@ ok      github.com/AtomicJar/testcontainers-cloud-go-example    2.946s
 
 The tests in this project create a PostgreSQL database and populate it with sample data. You can [set a fixed port](https://newsletter.testcontainers.com/announcements/set-fixed-ports-to-easily-debug-development-services) for the `postgres` service, then [freeze containers shutdown](https://newsletter.testcontainers.com/announcements/freeze-containers-to-prevent-their-shutdown-while-you-debug) to easily connect to the database from your IDE after your tests run.
 
-See if you can inspect the database. Username: `test`. Password: `test`.
+See if you can inspect the database. Username: `postgres`. Password: `postgres`.
  
