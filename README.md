@@ -1,82 +1,56 @@
-# Testcontainers Cloud Go Example
+# testcontainers-cloud-go-example
 
-The current repository helps you to verify that you configured your [Testcontainers Cloud][tcc] agent correctly in your
-local environment.
+This is an example repository with a simple test confirming proper connection from Testcontainers Desktop (or the CI agent) to your [Testcontainers Cloud](https://app.testcontainers.cloud) account.
 
-## Clone the repository and run the first Testcontainer test suite
+For details on how to bootstrap Testcontainers in an actual project, please refer to the [Getting started with Testcontainers Go guide](https://github.com/testcontainers/tc-guide-getting-started-with-testcontainers-for-go).
+
+## Clone the repository and run the first Testcontainers test suite
 
 ```
 git clone https://github.com/AtomicJar/testcontainers-cloud-go-example
 cd testcontainers-cloud-go-example
-go mod download
-go test -v -count=1
 ```
-
-## Verify the agent is running
-
-✅ __Passive State__: Agent awaiting a Testcontainers test to be executed.
-
-![agent-running](./docs/passive-connection.png)
-
-✅ __Running State__: Agent connected to Testcontainers Cloud.
-
-![agent-running](./docs/active-connection.png)
-
-⚠️ __Stopped State__: Agent is stopped and will not accept connections.
-
-Please, Start the agent to continue.
-
-![agent-stopped](./docs/stopped.png)
-
-To download the agent for local usage, check the [download page here][tcc-download].
 
 ## Run the test suite
 
-`go test -v -count=1`
-
-### Your environment is correctly configured if
-
-Test output:
+Note that it's important to add the `-v` flag to the `go test` command, otherwise the output of the tests will be suppressed.
 
 ```shell
-=== RUN   TestWithRedis/Connected_to_Testcontainers_Cloud
-    main_test.go:91:                                          /
-                                               /////////
-                                            ///////////////
-                                           /////////////////
-                                              /////////////
-                                             %%   ////   %
-                                             %%    //   %%
-                                           %%      //      %
-                                         %%        ////      %
-                                         %     /////////     %
-                                          % /////////////// %%
-                                            %%%%%%%%%%%%%%%
-
-            /%%%%%%    /%%                             /%%              /%%%%%
-           /%%__  %%  | %%                            |__/             |__  %%
-          | %%  \ %% /%%%%%%    /%%%%%%  /%%%%%%/%%%%  /%%  /%%%%%%%      | %%  /%%%%%%   /%%%%%%
-          | %%%%%%%%|_  %%_/   /%%__  %%| %%_  %%_  %%| %% /%%_____/      | %% |____  %% /%%__  %%
-          | %%__  %%  | %%    | %%  \ %%| %% \ %% \ %%| %%| %%       /%%  | %%  /%%%%%%%| %%  \__/
-          | %%  | %%  | %% /%%| %%  | %%| %% | %% | %%| %%| %%      | %%  | %% /%%__  %%| %%
-          | %%  | %%  |  %%%%/|  %%%%%%/| %% | %% | %%| %%|  %%%%%%%|  %%%%%%/|  %%%%%%%| %%
-          |__/  |__/   \___/   \______/ |__/ |__/ |__/|__/ \_______/ \______/  \_______/|__/
-
-
-          Congratulations on running your first test on Testcontainers Cloud! 🎉
-          You can now return to the website to complete your onboarding
-
---- PASS: TestWithRedis (4.38s)
-    --- PASS: TestWithRedis/Container_can_start (0.06s)
-    --- PASS: TestWithRedis/Connected_to_Testcontainers_Cloud (0.00s)
-PASS
-ok  	github.com/AtomicJar/testcontainers-cloud-go-example	4.750s
+go test -v
 ```
 
-Agent status:
+## Confirm your environment is configured correctly
 
-![agent-running](./docs/active-connection.png)
+The test output should show the Testcontainers logo and which container runtime was used:  
 
-[tcc]: https://testcontainers.cloud/
+```shell
 
-[tcc-download]: https://app.testcontainers.cloud/start/download?mode=update
+████████╗███████╗███████╗████████╗ ██████╗ ██████╗ ███╗   ██╗████████╗ █████╗ ██╗███╗   ██╗███████╗██████╗ ███████╗ 
+╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██║████╗  ██║██╔════╝██╔══██╗██╔════╝ 
+   ██║   █████╗  ███████╗   ██║   ██║     ██║   ██║██╔██╗ ██║   ██║   ███████║██║██╔██╗ ██║█████╗  ██████╔╝███████╗ 
+   ██║   ██╔══╝  ╚════██║   ██║   ██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██║██║██║╚██╗██║██╔══╝  ██╔══██╗╚════██║ 
+   ██║   ███████╗███████║   ██║   ╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║██║██║ ╚████║███████╗██║  ██║███████║ 
+   ╚═╝   ╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚══════╝ 
+  
+  
+  Congratulations on running your first test! 🎉
+  Runtime used: 
+      Testcontainers Cloud
+ 
+  You can now return to the website to complete your onboarding.
+
+2023/08/16 17:33:13 🐳 Terminating container: c2dbde862d74
+2023/08/16 17:33:13 🚫 Container terminated: c2dbde862d74
+--- PASS: TestTestcontainersCloud (2.63s)
+PASS
+ok      github.com/AtomicJar/testcontainers-cloud-go-example    2.946s
+```
+
+## (optional) Use Testcontainers Desktop to easily debug the database
+
+[Testcontainers Desktop](https://testcontainers.com/desktop/) helps developers with common tasks such as debugging your Testcontainers-powered dependencies. Let's practice!
+
+The tests in this project create a PostgreSQL database and populate it with sample data. You can [set a fixed port](https://newsletter.testcontainers.com/announcements/set-fixed-ports-to-easily-debug-development-services) for the `postgres` service, then [freeze containers shutdown](https://newsletter.testcontainers.com/announcements/freeze-containers-to-prevent-their-shutdown-while-you-debug) to easily connect to the database from your IDE after your tests run.
+
+See if you can inspect the database. Username: `test`. Password: `test`.
+ 

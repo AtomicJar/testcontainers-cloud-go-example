@@ -2,93 +2,56 @@ package main
 
 import (
 	"context"
-	"io"
-	"log"
+	"fmt"
+	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go"
+	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-const success = "                                         /                                      \n" +
-	"                                       /////////                                  \n" +
-	"                                    ///////////////                               \n" +
-	"                                   /////////////////                              \n" +
-	"                                      /////////////                               \n" +
-	"                                     %%   ////   %                                \n" +
-	"                                     %%    //   %%                                \n" +
-	"                                   %%      //      %                              \n" +
-	"                                 %%        ////      %                            \n" +
-	"                                 %     /////////     %                            \n" +
-	"                                  % /////////////// %%                            \n" +
-	"                                    %%%%%%%%%%%%%%%       \n" +
-	"  \n" +
-	"    /%%%%%%    /%%                             /%%              /%%%%%                    \n" +
-	"   /%%__  %%  | %%                            |__/             |__  %%                    \n" +
-	"  | %%  \\ %% /%%%%%%    /%%%%%%  /%%%%%%/%%%%  /%%  /%%%%%%%      | %%  /%%%%%%   /%%%%%% \n" +
-	"  | %%%%%%%%|_  %%_/   /%%__  %%| %%_  %%_  %%| %% /%%_____/      | %% |____  %% /%%__  %%\n" +
-	"  | %%__  %%  | %%    | %%  \\ %%| %% \\ %% \\ %%| %%| %%       /%%  | %%  /%%%%%%%| %%  \\__/\n" +
-	"  | %%  | %%  | %% /%%| %%  | %%| %% | %% | %%| %%| %%      | %%  | %% /%%__  %%| %%      \n" +
-	"  | %%  | %%  |  %%%%/|  %%%%%%/| %% | %% | %%| %%|  %%%%%%%|  %%%%%%/|  %%%%%%%| %%      \n" +
-	"  |__/  |__/   \\___/   \\______/ |__/ |__/ |__/|__/ \\_______/ \\______/  \\_______/|__/    \n" +
-	"  \n" +
-	"  \n" +
-	"  Congratulations on running your first test on Testcontainers Cloud! 🎉\n" +
-	"  You can now return to the website to complete your onboarding\n"
-
-func TestWithRedis(t *testing.T) {
-	w := &strings.Builder{}
-	l := log.New(w, "[TESTCONTAINERS] ", log.LstdFlags)
-
+func TestTestcontainersCloud(t *testing.T) {
 	ctx := context.Background()
-	req := testcontainers.ContainerRequest{
-		Image:        "redis:6.2.6-alpine",
-		ExposedPorts: []string{"6379/tcp"},
-		WaitingFor:   wait.ForLog("Ready to accept connections"),
+
+	c, err := postgres.RunContainer(
+		ctx,
+		testcontainers.WithImage("postgres:14-alpine"),
+		postgres.WithInitScripts(filepath.Join("testdata", "init.sql")),
+		postgres.WithDatabase("testcontainers-go"),
+		postgres.WithUsername("postgres"),
+		postgres.WithPassword("postgres"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).WithStartupTimeout(10*time.Second)),
+	)
+	require.NoError(t, err)
+	defer c.Terminate(ctx)
+
+	dockerClient, err := testcontainers.NewDockerClient()
+	require.NoError(t, err)
+
+	info, err := dockerClient.Info(ctx)
+	require.NoError(t, err)
+
+	serverVersion := info.ServerVersion
+
+	containsCloud := strings.Contains(serverVersion, "testcontainerscloud")
+	containsDesktop := strings.Contains(serverVersion, "Testcontainers Desktop")
+	if !(containsCloud || containsDesktop) {
+		fmt.Println(ohNo)
+		t.FailNow()
 	}
 
-	redisC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: req,
-		Started:          true,
-		Logger:           l,
-	})
-	if err == nil {
-		t.Cleanup(func() {
-			_ = redisC.Terminate(ctx)
-		})
+	expectedRuntime := "Testcontainers Cloud"
+	if containsCloud {
+		expectedRuntime = info.OperatingSystem
+	} else if containsDesktop {
+		expectedRuntime = "via Testcontainers Desktop app"
 	}
 
-	t.Run("Container can start", func(t *testing.T) {
-		if err != nil {
-			t.Fatalf("[Container creation] %s: %v", w, err)
-		}
-
-		logs, err := redisC.Logs(ctx)
-		if err != nil {
-			t.Fatalf("Logs: %s: %v", w, err)
-		}
-
-		bytes, err := io.ReadAll(logs)
-		if err != nil {
-			t.Fatalf("%s: %v", w, err)
-		}
-		t.Logf("Container logs: \n%s", string(bytes))
-
-		if redisC.GetContainerID() == "" {
-			t.Error("Container ID is empty, something went wrong starting the redis container")
-		}
-	})
-
-	t.Run("Connected to Testcontainers Cloud", func(t *testing.T) {
-		if err != nil {
-			t.Skip("Container can't be started, seems there is an issue connecting to Testcontainers Cloud")
-		}
-		if !strings.Contains(w.String(), "testcontainerscloud") {
-			t.Fatal("Can't find <testcontainerscloud> in logs, which means that most probably, you're not connected to Testcontainers Cloud:\n", w.String())
-		}
-
-		t.Log(success)
-	})
-
+	fmt.Printf(logo, expectedRuntime)
 }
