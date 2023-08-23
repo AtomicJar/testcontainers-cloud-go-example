@@ -6,18 +6,13 @@ For details on how to bootstrap Testcontainers in an actual project, please refe
 
 ## Clone the repository and run the first Testcontainers test suite
 
-```
+```shell
 git clone https://github.com/AtomicJar/testcontainers-cloud-go-example
 cd testcontainers-cloud-go-example
-```
-
-## Run the test suite
-
-```shell
 make test
 ```
 
-The `Make` command will run the test suite using `go test -v -count=1 ./...`
+The `Make` command will run the test suite using `go test -v -count=1 ./...`.
 
 Note that it's important to add the `-v` flag to the `go test` command, otherwise the output of the tests will be suppressed.
 
