@@ -13,11 +13,13 @@ cd testcontainers-cloud-go-example
 
 ## Run the test suite
 
-Note that it's important to add the `-v` flag to the `go test` command, otherwise the output of the tests will be suppressed.
-
 ```shell
-go test -v
+make test
 ```
+
+The `Make` command will run the test suite using `go test -v -count=1 ./...`
+
+Note that it's important to add the `-v` flag to the `go test` command, otherwise the output of the tests will be suppressed.
 
 ## Confirm your environment is configured correctly
 
