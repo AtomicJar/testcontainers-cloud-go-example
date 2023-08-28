@@ -1,0 +1,24 @@
+name: Run Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Setup Go
+          uses: actions/setup-go@v4
+          with:
+            go-version: '1.x'
+        - name: Setup Testcontainers Cloud Client
+          uses: atomicjar/testcontainers-cloud-setup-action@main
+          with:
+            token: ${{ secrets.TCC_SECRET_EXAMPLES }}
+        - name: Run example
+          run: |
+            make test
