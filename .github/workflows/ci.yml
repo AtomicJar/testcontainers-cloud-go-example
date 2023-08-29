@@ -14,7 +14,8 @@ jobs:
         - name: Setup Go
           uses: actions/setup-go@v4
           with:
-            go-version: '1.x'
+            go-version-file: 'go.mod'
+            cache-dependency-path: 'go.sum'
         - name: Setup Testcontainers Cloud Client
           uses: atomicjar/testcontainers-cloud-setup-action@main
           with:
