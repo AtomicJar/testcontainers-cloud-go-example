@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"gotest.tools/v3/assert"
+	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -38,17 +38,17 @@ func TestTestcontainersCloud(t *testing.T) {
 		}
 	})
 
-	cs, _ := c.ConnectionString(ctx, "sslmode=disable")
+	cs, err := c.ConnectionString(ctx, "sslmode=disable")
 	db, err := sql.Open("postgres", cs)
 	defer db.Close()
 
 	var numberOfGuides int
 	result, err := db.Query("SELECT COUNT(*) FROM guides")
 	defer result.Close()
+	require.NoError(t, err)
 
 	result.Next()
 	result.Scan(&numberOfGuides)
-	require.NoError(t, err)
 	assert.Equal(t, numberOfGuides, 6)
 
 	dockerClient, err := testcontainers.NewDockerClient()
