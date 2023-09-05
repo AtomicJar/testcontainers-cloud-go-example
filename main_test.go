@@ -39,6 +39,8 @@ func TestTestcontainersCloud(t *testing.T) {
 	})
 
 	cs, err := c.ConnectionString(ctx, "sslmode=disable")
+	require.NoError(t, err)
+
 	db, err := sql.Open("postgres", cs)
 	defer db.Close()
 
