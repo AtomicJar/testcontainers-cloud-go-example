@@ -61,7 +61,7 @@ func TestTestcontainersCloud(t *testing.T) {
 	containsCloud := strings.Contains(serverVersion, "testcontainerscloud")
 	containsDesktop := strings.Contains(serverVersion, "Testcontainers Desktop")
 	if !(containsCloud || containsDesktop) {
-		fmt.Printf(ohNo)
+		fmt.Print(ohNo)
 		t.FailNow()
 	}
 
