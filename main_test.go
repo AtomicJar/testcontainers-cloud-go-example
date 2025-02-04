@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -20,9 +19,9 @@ import (
 func TestTestcontainersCloud(t *testing.T) {
 	ctx := context.Background()
 
-	c, err := postgres.RunContainer(
+	c, err := postgres.Run(
 		ctx,
-		testcontainers.WithImage("postgres:14-alpine"),
+		"postgres:14-alpine",
 		postgres.WithInitScripts(filepath.Join("testdata", "init.sql")),
 		postgres.WithDatabase("testcontainers-go"),
 		postgres.WithUsername("postgres"),
@@ -31,29 +30,27 @@ func TestTestcontainersCloud(t *testing.T) {
 			wait.ForLog("database system is ready to accept connections").
 				WithOccurrence(2).WithStartupTimeout(10*time.Second)),
 	)
+	testcontainers.CleanupContainer(t, c)
 	require.NoError(t, err)
-	t.Cleanup(func() {
-		if err := c.Terminate(ctx); err != nil {
-			t.Fatalf("failed to terminate container: %s", err)
-		}
-	})
 
 	cs, err := c.ConnectionString(ctx, "sslmode=disable")
 	require.NoError(t, err)
 
 	db, err := sql.Open("postgres", cs)
+	require.NoError(t, err)
 	defer db.Close()
 
 	var numberOfGuides int
 	result, err := db.Query("SELECT COUNT(*) FROM guides")
+	require.NoError(t, err)
 	defer result.Close()
 	require.NoError(t, err)
 
 	result.Next()
 	result.Scan(&numberOfGuides)
-	assert.Equal(t, numberOfGuides, 6)
+	require.Equal(t, numberOfGuides, 6)
 
-	dockerClient, err := testcontainers.NewDockerClient()
+	dockerClient, err := testcontainers.NewDockerClientWithOpts(context.Background())
 	require.NoError(t, err)
 
 	info, err := dockerClient.Info(ctx)
