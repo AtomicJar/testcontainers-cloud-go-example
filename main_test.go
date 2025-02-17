@@ -16,6 +16,8 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
+const dockerCloudLabel = "cloud.docker.run.version"
+
 func TestTestcontainersCloud(t *testing.T) {
 	ctx := context.Background()
 
@@ -57,20 +59,26 @@ func TestTestcontainersCloud(t *testing.T) {
 	require.NoError(t, err)
 
 	serverVersion := info.ServerVersion
+	var containsCloudLabel bool
+	for _, l := range info.Labels {
+		if strings.Contains(l, dockerCloudLabel) {
+			containsCloudLabel = true
+		}
+	}
 
 	containsCloud := strings.Contains(serverVersion, "testcontainerscloud")
 	containsDesktop := strings.Contains(serverVersion, "Testcontainers Desktop")
-	if !(containsCloud || containsDesktop) {
+	if !(containsCloud || containsDesktop || containsCloudLabel) {
 		fmt.Print(ohNo)
 		t.FailNow()
 	}
 
 	expectedRuntime := "Testcontainers Cloud"
-	if !containsCloud {
+	if !containsCloud && !containsCloudLabel {
 		expectedRuntime = info.OperatingSystem
 	}
 	if containsDesktop {
-		expectedRuntime += " via Testcontainers Desktop app"
+		expectedRuntime += " via Testcontainers Desktop"
 	}
 
 	fmt.Printf(logo, expectedRuntime)
