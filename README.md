@@ -51,3 +51,13 @@ The tests in this project create a PostgreSQL database and populate it with samp
 
 See if you can inspect the database. Username: `postgres`. Password: `postgres`.
  
+### Troubleshooting Testcontainers with WSL
+
+If you are using Testcontainers in WSL (Windows Subsystem for Linux) and encounter issues related to configuration, ensure that the `.testcontainers.properties` file is located in your WSL home directory (`~`). By default, this file might be placed in your Windows home directory (`C:\Users\your-user`), causing Testcontainers to not detect the correct configuration inside WSL. 
+
+#### Workaround:
+Manually copy the `.testcontainers.properties` file from your Windows home to your WSL home:
+
+```sh
+cp /mnt/c/Users/your-user/.testcontainers.properties ~/
+```
